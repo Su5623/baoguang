@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天法五十 寶光永耀 - 50 週年紀念特展</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Noto+Sans+TC:wght@300;400&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --gold-primary: #D4AF37;
+            --gold-light: #F1D38E;
+            --gold-dark: #996515;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #ffffff;
+            color: #333;
+        }
+
+        h1,
+        h2,
+        h3,
+        .serif {
+            font-family: 'Noto Serif TC', serif;
+        }
+
+        /* 導覽列與文字特效 */
+        .nav-dark {
+            background-color: #0c0a09;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% center;
+            }
+
+            100% {
+                background-position: 200% center;
+            }
+        }
+
+        .bao-guang-text {
+            background: linear-gradient(90deg, #8B6508, #D4AF37, #B8860B, #D4AF37, #8B6508);
+            background-size: 200% auto;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 6s linear infinite;
+        }
+
+        /* 修正後的光束動畫 */
+        @keyframes history-sweep {
+            0% {
+                transform: translateX(120%) skewX(-25deg);
+                opacity: 0;
+            }
+
+            20%,
+            80% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateX(-120%) skewX(-25deg);
+                opacity: 0;
+            }
+        }
+
+        .animate-sweep {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            background: linear-gradient(to right,
+                    transparent 0%,
+                    rgba(212, 175, 55, 0.05) 30%,
+                    rgba(212, 175, 55, 0.2) 50%,
+                    rgba(212, 175, 55, 0.05) 70%,
+                    transparent 100%);
+            animation: history-sweep 12s ease-in-out infinite;
+        }
+
+        /* 下拉選單核心樣式 */
+        .dropdown-content {
+            position: absolute;
+            top: calc(100% + 15px);
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+            background: linear-gradient(135deg, rgba(28, 25, 23, 0.98), rgba(41, 37, 36, 0.95));
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7), inset 0 0 15px rgba(212, 175, 55, 0.1);
+            min-width: 240px;
+            padding: 1.2rem 0;
+            border-radius: 2px;
+            overflow: hidden;
+            z-index: 100;
+        }
+
+        /* 刪除雲紋，改用優雅金色暈光 */
+        .dropdown-content::after {
+            content: "";
+            position: absolute;
+            bottom: -20%;
+            right: -20%;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+            transition: all 0.8s ease;
+        }
+
+        .dropdown-group:hover .dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .dropdown-group:hover .dropdown-content::after {
+            opacity: 0.3;
+            transform: scale(1.2);
+        }
+
+        /* 下拉選項排版修正 */
+        .dropdown-item {
+            display: block;
+            padding: 0.8rem 2rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .dropdown-item:hover {
+            color: #F1D38E;
+            background: rgba(212, 175, 55, 0.08);
+        }
+
+        .dropdown-item .en-sub {
+            display: block;
+            font-size: 10px;
+            color: rgba(212, 175, 55, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-top: 4px;
+            transition: color 0.3s ease;
+        }
+
+        .dropdown-item:hover .en-sub {
+            color: rgba(241, 211, 142, 0.8);
+        }
+
+        /* 導覽連結與背景動畫保持 */
+        .nav-link {
+            position: relative;
+            padding-bottom: 4px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: 0;
+            left: 50%;
+            background: linear-gradient(90deg, transparent, #D4AF37, transparent);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link:hover {
+            color: #F1D38E;
+            text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+        }
+
+        @keyframes pan-image {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .animate-pan-image {
+            animation: pan-image 120s linear infinite;
+        }
+
+        .bg-silk {
+            position: relative;
+            background-color: #ffffff;
+            background-image: radial-gradient(circle at 70% 50%, #fffbf2 0%, #ffffff 100%);
+        }
+
+        .history-glow {
+            position: absolute;
+            right: -5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24rem;
+            height: 24rem;
+            background-color: rgba(254, 249, 195, 0.3);
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: 0;
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 1.5s ease-out forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+                filter: blur(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                filter: blur(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="overflow-x-hidden">
+
+    <nav class="fixed w-full z-50 px-6 py-4 flex justify-between items-center nav-dark shadow-2xl">
+        <div class="flex items-center space-x-3">
+            <img src="新春拜年貢燈祈福 (2).png" alt="LOGO" class="h-10 w-auto object-contain">
+            <div class="text-xl font-bold bao-guang-text tracking-widest">天法五十 寶光永耀</div>
+        </div>
+
+        <div class="hidden md:flex space-x-10 text-sm tracking-widest font-light text-white">
+            <a href="#home" class="nav-link">首頁啟航</a>
+
+            <div class="relative dropdown-group">
+                <a href="#history" class="nav-link">五十載歷史</a>
+                <div class="dropdown-content">
+                    <a href="history_origin.html" target="_blank" class="dropdown-item">
+                        <div class="flex flex-col">
+                            <span>一九七六 · 創立初心</span>
+                            <span class="en-sub">The Founding Spirit</span>
+                        </div>
+                    </a>
+                    <div class="h-[1px] bg-yellow-600/10 mx-6 my-2"></div>
+                    <a href="history_expansion.html" target="_blank" class="dropdown-item">
+                        <div class="flex flex-col">
+                            <span>二〇〇〇 · 法脈傳承</span>
+                            <span class="en-sub">Dharma Lineage</span>
+                        </div>
+                    </a>
+                    <div class="h-[1px] bg-yellow-600/20 mx-4 my-2"></div>
+                    <a href="history_milestone.html" target="_blank" class="dropdown-item">
+                        <div class="flex flex-col">
+                            <span>二〇二六 · 五十週年</span>
+                            <span class="en-sub">50th Anniversary</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="relative dropdown-group">
+                <a href="#event" class="nav-link">慶典活動</a>
+                <div class="dropdown-content">
+                    <a href="event_main.html" target="_blank" class="dropdown-item">
+                        <div class="flex flex-col">
+                            <span>週年大法會</span>
+                            <span class="en-sub">Grand Puja</span>
+                        </div>
+                    </a>
+                    <div class="h-[1px] bg-yellow-600/10 mx-6 my-2"></div>
+                    <a href="event_exhibition.html" target="_blank" class="dropdown-item">
+                        <div class="flex flex-col">
+                            <span>藝術文物展</span>
+                            <span class="en-sub">Sacred Art Exhibition</span>
+                        </div>
+                    </a>
+                    <div class="h-[1px] bg-yellow-600/10 mx-6 my-2"></div>
+                    <a href="event_charity.html" target="_blank" class="dropdown-item">
+                        <div class="flex flex-col">
+                            <span>慈善園遊會</span>
+                            <span class="en-sub">Charity Bazaar</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <a href="#blessing"
+                class="group relative px-6 py-2 tracking-widest overflow-hidden rounded-full border border-yellow-700 bg-black/50 backdrop-blur-sm transition-all duration-500 hover:border-white">
+                <span
+                    class="absolute inset-0 translate-y-full rounded-full bg-gradient-to-r from-yellow-700 via-yellow-400 to-yellow-700 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500"></span>
+
+                <span class="relative z-10 text-yellow-500 font-bold group-hover:text-black transition duration-500">
+                    線上祈福
+                </span>
+            </a>
+        </div>
+    </nav>
+
+    <section id="home" class="relative h-screen w-full overflow-hidden flex items-center justify-center">
+        <div class="absolute inset-0 z-0">
+            <div class="h-full flex animate-pan-image">
+                <img src="橫幅寶光玉山(取消中間河流)-202600316-1.jpg" class="h-full min-w-none max-w-none object-cover opacity-90">
+                <img src="橫幅寶光玉山(取消中間河流)-202600316-1.jpg" class="h-full min-w-none max-w-none object-cover opacity-90">
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-white/40"></div>
+        </div>
+
+        <div class="relative z-10 text-center space-y-8 fade-in-up">
+            <p class="text-yellow-800 tracking-[0.8em] text-sm md:text-base font-bold">1976 - 2026</p>
+            <h1 class="text-4xl md:text-7xl font-black bao-guang-text pb-4 tracking-[0.3em] drop-shadow-sm">天法五十<br
+                    class="md:hidden"> 寶光永耀</h1>
+            <div class="w-24 h-[2px] bg-yellow-700/50 mx-auto"></div>
+            <p class="max-w-2xl mx-auto text-gray-800 font-medium tracking-[0.2em] leading-relaxed italic">
+                「半世紀的傳承，一世的守護。<br>於此輝煌時刻，我們共聚一心，續寫璀璨篇章。」
+            </p>
+            <div class="pt-6 flex justify-center">
+                <a href="#history"
+                    class="group relative px-12 py-4 text-sm tracking-widest overflow-hidden rounded-full border-2 border-yellow-700 bg-white/50 backdrop-blur-sm transition-all duration-500 hover:bg-yellow-700 shadow-xl">
+                    <span
+                        class="relative z-10 text-yellow-900 font-bold group-hover:text-white transition duration-500">探索歷程</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="history" class="relative py-32 px-6 bg-silk text-black overflow-hidden group">
+        <div class="absolute inset-0 pointer-events-none overflow-hidden">
+            <div class="animate-sweep"></div>
+            <div class="history-glow"></div>
+        </div>
+
+        <div class="relative z-10 max-w-6xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div class="space-y-6">
+                    <h2 class="text-4xl font-bold serif border-l-4 border-yellow-600 pl-6">五十載歷史長河</h2>
+                    <ul class="space-y-4 pt-4">
+                        <li class="flex items-center space-x-3 italic text-gray-500 cursor-pointer hover:text-yellow-600 transition group"
+                            onclick="changeHistoryImage('新春拜年貢燈祈福 (2).png')">
+                            <span class="w-10 h-[1px] bg-yellow-600 group-hover:w-16 transition-all"></span>
+                            <span>1976 - 創立初心，法脈始動</span>
+                        </li>
+                        <li class="flex items-center space-x-3 italic text-gray-500 cursor-pointer hover:text-yellow-600 transition group"
+                            onclick="changeHistoryImage('橫幅寶光玉山(取消中間河流)-202600316-1.jpg')">
+                            <span class="w-10 h-[1px] bg-yellow-600 group-hover:w-16 transition-all"></span>
+                            <span>2000 - 規模擴張，法光普照</span>
+                        </li>
+                        <li class="flex items-center space-x-3 italic text-gray-500 cursor-pointer hover:text-yellow-600 transition group"
+                            onclick="changeHistoryImage('新春拜年貢燈祈福 (2).png')">
+                            <span class="w-10 h-[1px] bg-yellow-600 group-hover:w-16 transition-all"></span>
+                            <span>2026 - 五十慶典，再創輝煌</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="relative">
+                    <div
+                        class="aspect-[4/5] bg-gray-200 rounded-sm shadow-2xl overflow-hidden border border-yellow-600/10">
+                        <img id="history-img" src="新春拜年貢燈祈福 (2).png"
+                            class="w-full h-full object-cover transition-opacity duration-500">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-gray-50 border-t border-gray-100">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <h2 class="text-3xl serif mb-12 bao-guang-text">半世紀的足跡</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+                <div class="space-y-3 group cursor-pointer"
+                    onclick="showStory('1976 創立初心', '這是在 1976 年的照片，記錄了最初創立時的珍貴瞬間。當時一磚一瓦皆是信眾共同扶持。')">
+                    <div
+                        class="aspect-square bg-white overflow-hidden border border-yellow-900/10 shadow-lg rounded-sm group-hover:border-yellow-600 transition-all">
+                        <img src="https://picsum.photos/400/400?random=1"
+                            class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    </div>
+                    <p class="text-xs text-yellow-800 font-bold tracking-widest">1976 創立初心</p>
+                </div>
+                <div class="space-y-3 group cursor-pointer"
+                    onclick="showStory('2000 規模擴張', '這一年，我們正式跨出了重要的一步，法脈傳承至更多地方，寶光遍照大地。')">
+                    <div
+                        class="aspect-square bg-white overflow-hidden border border-yellow-900/10 shadow-lg rounded-sm group-hover:border-yellow-600 transition-all">
+                        <img src="https://picsum.photos/400/400?random=2"
+                            class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    </div>
+                    <p class="text-xs text-yellow-800 font-bold tracking-widest">法脈傳承盛況</p>
+                </div>
+                <div class="space-y-3 group cursor-pointer"
+                    onclick="showStory('寶光永耀瞬間', '每一場法會都是心靈的洗滌，這張照片捕捉了信眾齊心祈願的輝煌時刻。')">
+                    <div
+                        class="aspect-square bg-white overflow-hidden border border-yellow-900/10 shadow-lg rounded-sm group-hover:border-yellow-600 transition-all">
+                        <img src="https://picsum.photos/400/400?random=3"
+                            class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    </div>
+                    <p class="text-xs text-yellow-800 font-bold tracking-widest">寶光永耀瞬間</p>
+                </div>
+                <div class="space-y-3 group cursor-pointer"
+                    onclick="showStory('五十週年慶典', '邁向五十週年，我們不忘初心，將這份慈悲與智慧繼續傳承給下一代。')">
+                    <div
+                        class="aspect-square bg-white overflow-hidden border border-yellow-900/10 shadow-lg rounded-sm group-hover:border-yellow-600 transition-all">
+                        <img src="https://picsum.photos/400/400?random=4"
+                            class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    </div>
+                    <p class="text-xs text-yellow-800 font-bold tracking-widest">五十週年慶典</p>
+                </div>
+            </div>
+
+            <div id="story-display"
+                class="hidden bg-white border border-yellow-600/20 p-8 md:p-12 shadow-inner rounded-lg fade-in-up">
+                <h3 id="story-title" class="text-2xl serif text-yellow-700 mb-6"></h3>
+                <p id="story-content" class="text-gray-600 leading-relaxed italic max-w-3xl mx-auto"></p>
+                <button onclick="closeStory()"
+                    class="mt-8 text-xs text-gray-400 hover:text-yellow-600 tracking-[0.5em] transition">CLOSE ✕
+                    關閉故事</button>
+            </div>
+        </div>
+    </section>
+    <section class="py-32 px-6 bg-gray-100 text-black">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-4xl font-bold serif border-l-4 border-yellow-600 pl-6">未來展望</h2>
+            <p class="text-gray-600 leading-loose mt-4">
+                隨著五十周年的到來，我們展望未來，將繼續秉持初心，推動法脈的發展與創新。讓我們攜手共進，迎接更加輝煌的明天。
+            </p>
+        </div>
+    </section>
+
+    <footer class="py-10 text-center text-gray-500 text-xs bg-white border-t">
+        <p>© 2026 天法五十 寶光永耀 紀念委員會. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        function changeHistoryImage(imageUrl) {
+            const imgElement = document.getElementById('history-img');
+            imgElement.style.opacity = 0;
+            setTimeout(() => {
+                imgElement.src = imageUrl;
+                imgElement.style.opacity = 1;
+            }, 300);
+        }
+
+        function showStory(title, content) {
+            const displayZone = document.getElementById('story-display');
+            const titleElement = document.getElementById('story-title');
+            const contentElement = document.getElementById('story-content');
+            if (displayZone.classList.contains('hidden')) { displayZone.classList.remove('hidden'); }
+            displayZone.style.opacity = '0';
+            setTimeout(() => {
+                titleElement.innerText = title;
+                contentElement.innerText = content;
+                displayZone.style.opacity = '1';
+                displayZone.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+
+        function closeStory() {
+            const displayZone = document.getElementById('story-display');
+            displayZone.style.opacity = '0';
+            setTimeout(() => { displayZone.classList.add('hidden'); }, 300);
+        }
+    </script>
+</body>
+
+</html>

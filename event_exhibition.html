@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <title>藝術文物展 - 天法五十</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700&family=Noto+Sans+TC:wght@300;400&display=swap"
+        rel="stylesheet">
+    <style>
+        h1,
+        h2,
+        .serif {
+            font-family: 'Noto Serif TC', serif;
+        }
+
+        body {
+            font-family: 'Noto Sans TC';
+            background: #fdfcf8;
+        }
+
+        .nav-link {
+            background: linear-gradient(90deg, #8B6508, #D4AF37);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<script>
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('opacity-100', 'translate-y-0');
+                entry.target.classList.remove('opacity-0', 'translate-y-10');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('section, .reveal-item').forEach(el => {
+        el.classList.add('transition-all', 'duration-1000', 'ease-out', 'opacity-0', 'translate-y-10');
+        observer.observe(el);
+    });
+</script>
+
+<body class="bg-stone-50 text-stone-800">
+    <nav class="p-6 bg-stone-950 shadow-xl flex justify-between"><a href="index.html" class="nav-link font-bold">←
+            返回首頁</a></nav>
+
+    <main class="max-w-5xl mx-auto py-24 px-6">
+        <div
+            class="bg-white p-12 shadow-2xl rounded-sm border-t-8 border-yellow-600 border border-stone-100 relative overflow-hidden">
+            <div class="absolute -bottom-20 -right-20 w-60 h-60 bg-yellow-100/30 rounded-full blur-3xl"></div>
+
+            <div class="relative z-10 space-y-12">
+                <header class="text-center space-y-4">
+                    <p class="text-yellow-800 tracking-[0.5em] text-sm">FIFTY YEARS | GRAND PUJA</p>
+                    <h1 class="text-4xl md:text-5xl font-bold text-stone-950 serif tracking-widest">感恩祈福大法會</h1>
+                    <div class="w-20 h-[2px] bg-yellow-700/50 mx-auto mt-6"></div>
+                </header>
+
+                <div class="grid md:grid-cols-2 gap-8 text-lg font-medium tracking-wide">
+                    <div class="flex items-center p-6 bg-stone-100 border-l-4 border-yellow-700 rounded-sm">
+                        <span class="text-3xl mr-4">📅</span>
+                        <div>
+                            <p class="text-xs text-gray-500 mb-1">活動日期 DATE</p><span>2026年10月15日 (農曆九月九日)</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center p-6 bg-stone-100 border-l-4 border-yellow-700 rounded-sm">
+                        <span class="text-3xl mr-4">📍</span>
+                        <div>
+                            <p class="text-xs text-gray-500 mb-1">活動地點 LOCATION</p><span>本寺大雄寶殿前廣場</span>
+                        </div>
+                    </div>
+                </div>
+
+                <article class="prose prose-stone max-w-none leading-loose text-gray-700 text-lg space-y-6">
+                    <p class="italic text-yellow-900/80">「以此功德，迴向眾生。法界安寧，世界和平。」</p>
+                    <p>本次五十週年感恩祈福大法會，將邀請國內外多位高僧大德共同主持。法會將進行一日的開示、誦經與祈福儀式。當晚將舉行盛大的傳燈儀式，象徵佛光普照，智慧代代相傳。</p>
+                    <p>誠摯邀請十方信眾共同參與，共襄盛舉，同霑法益。</p>
+                    <img src="https://picsum.photos/1000/500?random=Puja"
+                        class="w-full rounded-sm shadow-xl border border-stone-200 mt-10">
+                </article>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

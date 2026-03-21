@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二〇二六 · 五十週年 - 天法五十</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Noto+Sans+TC:wght@300;400&display=swap"
+        rel="stylesheet">
+    <style>
+        h1,
+        h2,
+        h3,
+        .serif {
+            font-family: 'Noto Serif TC', serif;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #fdfcf8;
+            color: #333;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #8B6508, #D4AF37, #8B6508);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* 滾動淡入動畫 */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<script>
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('opacity-100', 'translate-y-0');
+                entry.target.classList.remove('opacity-0', 'translate-y-10');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('section, .reveal-item').forEach(el => {
+        el.classList.add('transition-all', 'duration-1000', 'ease-out', 'opacity-0', 'translate-y-10');
+        observer.observe(el);
+    });
+</script>
+
+<body>
+
+    <nav class="fixed w-full z-50 px-6 py-4 flex justify-between items-center bg-stone-950 shadow-xl">
+        <a href="index.html" class="flex items-center space-x-3 group">
+            <span
+                class="text-lg font-bold gold-gradient-text tracking-widest transition-all group-hover:tracking-[0.2em]">←
+                返回首頁</span>
+        </a>
+    </nav>
+
+    <header class="relative h-[65vh] flex items-center justify-center overflow-hidden bg-stone-900">
+        <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=2094&auto=format&fit=crop"
+            class="absolute inset-0 w-full h-full object-cover opacity-60">
+        <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-fdfcf8"></div>
+        <div class="relative z-10 text-center reveal active">
+            <p class="text-yellow-400 tracking-[0.6em] mb-4 text-sm font-bold">YEAR 2026</p>
+            <h1 class="text-5xl md:text-7xl font-heavy text-white tracking-[0.2em] drop-shadow-lg">天法五十 寶光永耀</h1>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-28 space-y-32">
+
+        <section class="reveal active">
+            <div class="flex flex-col md:flex-row gap-16 items-center">
+                <div class="flex-1 space-y-8">
+                    <h2 class="text-4xl font-bold text-stone-800 leading-tight">跨越千禧的<br><span
+                            class="text-yellow-700">智慧轉折</span></h2>
+                    <div class="w-16 h-1 bg-yellow-600"></div>
+                    <p class="leading-loose text-gray-700 text-lg">
+                        邁入二〇〇〇年，世界正值千禧年的歡騰，法脈也迎來了關鍵的轉折。我們不再僅僅是荒蕪中的開拓者，而是成為了智慧的守護者。在硬體上，殿堂進行了大規模的翻修與擴建，確立了今日宏偉的雛形。
+                    </p>
+                </div>
+                <div class="flex-1">
+                    <img src="https://picsum.photos/800/600?random= Millennial"
+                        class="rounded-sm shadow-2xl border border-yellow-900/10 hover:scale-105 transition duration-500">
+                </div>
+            </div>
+        </section>
+
+        <section class="reveal">
+            <div class="flex flex-col md:flex-row-reverse gap-16 items-center">
+                <div class="flex-1 space-y-8">
+                    <h2 class="text-4xl font-bold text-stone-800 leading-tight">燈燈相傳<br><span
+                            class="text-yellow-700">光光互照</span></h2>
+                    <div class="w-16 h-1 bg-yellow-600"></div>
+                    <p class="leading-loose text-gray-700 text-lg">
+                        傳承的基礎在於人。這一年，我們正式啟動了法脈人才培育計畫，不僅致力於經典的整理，更將慈悲與智慧的種子播撒至年輕世代心中。法會不再只是祈福，更是心靈的教育與洗滌。
+                    </p>
+                </div>
+                <div class="flex-1">
+                    <img src="https://picsum.photos/800/600?random=Dharma"
+                        class="rounded-sm shadow-2xl border border-yellow-900/10 hover:scale-105 transition duration-500">
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="py-24 text-center bg-stone-950 text-stone-600">
+        <p class="tracking-widest serif text-xl mb-4 gold-gradient-text">天法五十 · 寶光永耀</p>
+        <p class="text-sm">© 2026 FIFTY YEARS OF DHARMA</p>
+        <a href="index.html"
+            class="mt-8 inline-block text-yellow-600 hover:text-yellow-400 transition tracking-[0.3em]">BACK TO HOME</a>
+    </footer>
+
+    <script>
+        // 滾動偵測動畫
+        const reveal = () => {
+            document.querySelectorAll('.reveal').forEach(el => {
+                if (el.getBoundingClientRect().top < window.innerHeight * 0.88) { el.classList.add('active'); }
+            });
+        };
+        window.addEventListener('scroll', reveal); reveal(); // 初始化檢查
+    </script>
+</body>
+
+</html>

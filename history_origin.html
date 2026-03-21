@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一九七六 · 創立初心 - 天法五十</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Noto+Sans+TC:wght@300;400&display=swap"
+        rel="stylesheet">
+    <style>
+        h1,
+        h2,
+        .serif {
+            font-family: 'Noto Serif TC', serif;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #fdfcf8;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #8B6508, #D4AF37, #8B6508);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* 內容區塊淡入動畫 */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<script>
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('opacity-100', 'translate-y-0');
+                entry.target.classList.remove('opacity-0', 'translate-y-10');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('section, .reveal-item').forEach(el => {
+        el.classList.add('transition-all', 'duration-1000', 'ease-out', 'opacity-0', 'translate-y-10');
+        observer.observe(el);
+    });
+</script>
+
+<body class="text-gray-800">
+
+    <nav class="fixed w-full z-50 px-6 py-4 flex justify-between items-center bg-stone-950 shadow-xl">
+        <a href="index.html" class="flex items-center space-x-3">
+            <span class="text-lg font-bold gold-gradient-text tracking-widest">← 返回首頁</span>
+        </a>
+    </nav>
+
+    <header class="relative h-[60vh] flex items-center justify-center overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=2094&auto=format&fit=crop"
+            class="absolute inset-0 w-full h-full object-cover opacity-60">
+        <div class="absolute inset-0 bg-black/40"></div>
+        <div class="relative z-10 text-center">
+            <p class="text-yellow-400 tracking-[0.5em] mb-4">SINCE 1976</p>
+            <h1 class="text-4xl md:text-6xl font-bold text-white tracking-widest">創立初心</h1>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-6 py-24 space-y-24">
+
+        <section class="reveal active">
+            <div class="flex flex-col md:flex-row gap-12 items-center">
+                <div class="flex-1 space-y-6">
+                    <h2 class="text-3xl font-bold text-stone-800 border-b-2 border-yellow-600 pb-2 inline-block">緣起於荒蕪
+                    </h2>
+                    <p class="leading-loose text-gray-600">
+                        一九七六年，那是一個物質匱乏但信仰堅定的年代。創辦人於荒煙蔓草中看見了法脈傳承的可能，不畏艱辛，帶領著第一批信眾，一磚一瓦地親手搭建起最初的殿堂。
+                    </p>
+                </div>
+                <div class="flex-1">
+                    <img src="https://picsum.photos/600/400?random=10"
+                        class="rounded-lg shadow-2xl border border-yellow-900/10">
+                </div>
+            </div>
+        </section>
+
+        <section class="reveal">
+            <div class="flex flex-col md:flex-row-reverse gap-12 items-center">
+                <div class="flex-1 space-y-6">
+                    <h2 class="text-3xl font-bold text-stone-800 border-b-2 border-yellow-600 pb-2 inline-block">純粹的願力
+                    </h2>
+                    <p class="leading-loose text-gray-600">
+                        「天法」二字，代表著順應自然、法通乾坤。在最初的十年裡，雖然規模不大，但每一次的祈福、每一場法會，都凝聚了極其純粹的願力，為往後的五十載打下了最穩固的核心。
+                    </p>
+                </div>
+                <div class="flex-1">
+                    <img src="https://picsum.photos/600/400?random=11"
+                        class="rounded-lg shadow-2xl border border-yellow-900/10">
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="py-20 text-center bg-stone-900 text-stone-500 text-sm">
+        <p>天法五十 · 寶光永耀</p>
+        <a href="index.html" class="mt-4 inline-block text-yellow-600 hover:text-yellow-400 transition">BACK TO HOME</a>
+    </footer>
+
+    <script>
+        // 滾動偵測動畫
+        window.addEventListener('scroll', () => {
+            document.querySelectorAll('.reveal').forEach(el => {
+                if (el.getBoundingClientRect().top < window.innerHeight * 0.85) {
+                    el.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
