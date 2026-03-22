@@ -10,6 +10,22 @@
         href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Noto+Sans+TC:wght@300;400&display=swap"
         rel="stylesheet">
     <style>
+        /* 升級版：更有感的浮現與模糊效果 */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(80px);
+            /* 距離拉長到 80px，更有感 */
+            filter: blur(8px);
+            /* 增加模糊度 */
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+
         h1,
         h2,
         .serif {
@@ -41,21 +57,6 @@
         }
     </style>
 </head>
-<script>
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('opacity-100', 'translate-y-0');
-                entry.target.classList.remove('opacity-0', 'translate-y-10');
-            }
-        });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('section, .reveal-item').forEach(el => {
-        el.classList.add('transition-all', 'duration-1000', 'ease-out', 'opacity-0', 'translate-y-10');
-        observer.observe(el);
-    });
-</script>
 
 <body class="text-gray-800">
 
@@ -77,7 +78,7 @@
 
     <main class="max-w-4xl mx-auto px-6 py-24 space-y-24">
 
-        <section class="reveal active">
+        <section class="opacity-0 translate-y-20 transition-all duration-1000">
             <div class="flex flex-col md:flex-row gap-12 items-center">
                 <div class="flex-1 space-y-6">
                     <h2 class="text-3xl font-bold text-stone-800 border-b-2 border-yellow-600 pb-2 inline-block">緣起於荒蕪
@@ -93,7 +94,7 @@
             </div>
         </section>
 
-        <section class="reveal">
+        <section class="opacity-0 translate-y-20 transition-all duration-1000">
             <div class="flex flex-col md:flex-row-reverse gap-12 items-center">
                 <div class="flex-1 space-y-6">
                     <h2 class="text-3xl font-bold text-stone-800 border-b-2 border-yellow-600 pb-2 inline-block">純粹的願力
@@ -117,14 +118,27 @@
     </footer>
 
     <script>
-        // 滾動偵測動畫
-        window.addEventListener('scroll', () => {
-            document.querySelectorAll('.reveal').forEach(el => {
-                if (el.getBoundingClientRect().top < window.innerHeight * 0.85) {
-                    el.classList.add('active');
-                }
+        // 1. 使用 IIFE 封裝避免變數污染
+        (function () {
+            const observerOptions = {
+                threshold: 0.1, // 稍微增加門檻，讓動畫更有「滑入」感
+                rootMargin: "0px 0px -80px 0px"
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, observerOptions);
+
+            // 2. 只偵測需要動的區塊，不要偵測 main 本身
+            document.querySelectorAll('section, article').forEach(el => {
+                el.classList.add('fade-in-section'); // 統一套用你在 <style> 寫的漂亮動畫
+                observer.observe(el);
             });
-        });
+        })();
     </script>
 </body>
 
