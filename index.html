@@ -2,9 +2,7 @@
 <html lang="zh-TW">
 
 <head>
-    <link rel="icon" href="新春拜年貢燈祈福 (2).png" type="image/png">
-    <link rel="icon" href="favicon-32x32.png" sizes="32x32" type="image/png">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="icon" href="道輝1.png" type="image/png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>天法五十 寶光永耀 - 50 週年紀念特展</title>
@@ -392,39 +390,102 @@
         </div>
     </nav>
 
-    <section id="home" class="relative h-screen w-full overflow-hidden flex items-center justify-center">
-        <div class="absolute inset-0 z-0">
-            <div class="h-full flex animate-pan-image">
-                <img src="橫幅寶光玉山(取消中間河流)-202600316-1.jpg" class="h-full min-w-none max-w-none object-cover opacity-90">
-                <img src="橫幅寶光玉山(取消中間河流)-202600316-1.jpg" class="h-full min-w-none max-w-none object-cover opacity-90">
+    <section class="relative h-[100vh] w-full bg-stone-900 overflow-hidden border-b border-yellow-900/30">
+
+        <div id="guide-overlay" onclick="closeGuide()"
+            class="absolute inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-[2px] cursor-pointer transition-opacity duration-700">
+
+            <div
+                class="text-center space-y-6 bg-black/50 backdrop-blur-xl p-10 md:p-16 rounded-sm border border-white/10 shadow-2xl scale-95 hover:scale-100 transition-transform">
+                <p class="text-yellow-500 tracking-[0.6em] text-xs md:text-sm animate-pulse">FIFTY YEARS | DHARMA MAP
+                </p>
+                <h1 class="text-4xl md:text-6xl font-bold text-white serif tracking-[0.2em]">天法五十 · 氣脈相連</h1>
+                <div class="space-y-2">
+                    <p class="text-stone-300 text-sm md:text-base tracking-widest mt-4">左右滑動地圖，點擊閃爍金點探索全台聖堂</p>
+                    <p class="text-yellow-500/60 text-xs mt-8">[ 點擊任意處開始探索 ]</p>
+                </div>
             </div>
-            <div class="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-white/40"></div>
         </div>
 
-        <div class="relative z-10 text-center space-y-8 fade-in-up">
-            <p class="text-yellow-800 tracking-[0.8em] text-sm md:text-base font-bold">1976 - 2026</p>
+        <script>
+            function closeGuide() {
+                const el = document.getElementById('guide-overlay');
+                el.style.opacity = '0';
+                setTimeout(() => {
+                    el.style.display = 'none';
+                }, 700);
+            }
+        </script>
 
-            <h1
-                class="text-4xl md:text-7xl font-black bao-guang-text pb-4 tracking-[0.3em] drop-shadow-sm delay-[300ms]">
-                天法五十<br class="md:hidden"> 寶光永耀
-            </h1>
+        <button onclick="scrollMap('left')"
+            class="absolute left-4 top-1/2 z-40 bg-black/40 text-white p-4 rounded-full hover:bg-yellow-700 transition hidden md:block">〈</button>
+        <button onclick="scrollMap('right')"
+            class="absolute right-4 top-1/2 z-40 bg-black/40 text-white p-4 rounded-full hover:bg-yellow-700 transition hidden md:block">〉</button>
 
-            <div class="w-24 h-[2px] bg-yellow-700/50 mx-auto delay-[500ms]"></div>
-
-            <p
-                class="max-w-2xl mx-auto text-gray-800 font-medium tracking-[0.2em] leading-relaxed italic delay-[700ms]">
-                「半世紀的傳承，一世的守護。<br>於此輝煌時刻，我們共聚一心，續寫璀璨篇章。」
-            </p>
-
-            <div class="pt-6 flex justify-center delay-[1000ms]">
-                <a href="#history"
-                    class="group relative px-12 py-4 text-sm tracking-widest overflow-hidden rounded-full border-2 border-yellow-700 bg-white/50 backdrop-blur-sm transition-all duration-500 hover:bg-yellow-700 shadow-xl">
-                    <span
-                        class="relative z-10 text-yellow-900 font-bold group-hover:text-white transition duration-500">探索歷程</span>
-                </a>
+        <div class="h-full w-full overflow-x-auto overflow-y-hidden cursor-grab active:cursor-grabbing hide-scrollbar select-none scroll-smooth"
+            id="hero-map-wrapper">
+            <div class="relative h-full inline-block whitespace-nowrap">
+                <img src="橫幅寶光玉山(取消中間河流)-202600316-1.jpg"
+                    class="h-full w-auto max-w-none block object-contain opacity-90"
+                    style="image-rendering: -webkit-optimize-contrast;" draggable="false">
+                <div id="map-points-layer" class="absolute inset-0 z-30 pointer-events-none"></div>
             </div>
+        </div>
+
+        </div>
         </div>
     </section>
+
+    <style>
+        /* 確保捲軸隱藏但功能正常 */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+
+    <script>
+        const wrapper = document.getElementById('hero-map-wrapper');
+
+        // 1. 自動置中功能 (讓大家進來先看到地圖中央)
+        window.addEventListener('load', () => {
+            const scrollAmount = (wrapper.scrollWidth - wrapper.clientWidth) / 2;
+            wrapper.scrollTo({ left: scrollAmount, behavior: 'smooth' });
+        });
+
+        // 2. 滑鼠拖動邏輯 (修正不能滑的問題)
+        let isMouseDown = false;
+        let startX;
+        let scrollLeft;
+
+        wrapper.addEventListener('mousedown', (e) => {
+            isMouseDown = true;
+            wrapper.classList.add('active');
+            startX = e.pageX - wrapper.offsetLeft;
+            scrollLeft = wrapper.scrollLeft;
+        });
+
+        wrapper.addEventListener('mouseleave', () => { isMouseDown = false; });
+        wrapper.addEventListener('mouseup', () => { isMouseDown = false; });
+
+        wrapper.addEventListener('mousemove', (e) => {
+            if (!isMouseDown) return;
+            e.preventDefault();
+            const x = e.pageX - wrapper.offsetLeft;
+            const walk = (x - startX) * 2; // 調整捲動速度
+            wrapper.scrollLeft = scrollLeft - walk;
+        });
+
+        // 3. 按鈕捲動功能
+        function scrollMap(direction) {
+            const amount = direction === 'left' ? -400 : 400;
+            wrapper.scrollBy({ left: amount, behavior: 'smooth' });
+        }
+    </script>
 
     <section id="history" class="relative py-32 px-6 bg-silk text-black overflow-hidden group">
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none">
@@ -652,6 +713,168 @@
         document.querySelectorAll('.fade-in-section').forEach(section => {
             observer.observe(section);
         });</script>
+    <script>
+        // 1. 資料清單
+        const templeData = [
+            { name: "天帝聖堂", x: 18.78, y: 43.70, desc: "北部道務之樞紐，凝聚無數願力，傳承天法精神。" },
+            { name: "天士聖堂", x: 19.59, y: 43.70, desc: "中台灣之精神堡壘，五十載法脈流長，弘揚慈悲與智慧。" },
+            { name: "天法聖堂", x: 14.12, y: 83.17, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "天彰聖堂", x: 22.47, y: 47.70, desc: "新設立靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "天園聖堂", x: 22.89, y: 49.88, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "天民聖堂", x: 23.25, y: 51.82, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "進德聖堂", x: 23.70, y: 50.61, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "天衙聖堂", x: 32.74, y: 48.67, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "寶蓮聖堂", x: 33.38, y: 47.34, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "永寶聖堂", x: 34.39, y: 47.09, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "慈航聖堂", x: 34.79, y: 46.00, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "天衢聖堂", x: 36.02, y: 48.67, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "關帝聖堂", x: 36.50, y: 47.22, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "天時聖堂", x: 37.05, y: 48.55, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "天恕聖堂", x: 37.48, y: 46.73, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "天僔聖堂", x: 37.85, y: 46.97, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "信玄聖堂", x: 38.30, y: 46.49, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "福瑞聖堂", x: 37.27, y: 57.26, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "寶彰聖堂", x: 38.63, y: 49.15, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "永道聖堂", x: 39.00, y: 49.76, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "聖啟聖堂", x: 40.18, y: 48.91, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "聖真聖堂", x: 40.58, y: 50.12, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "寶生聖堂", x: 45.29, y: 52.91, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "寶經聖堂", x: 45.72, y: 54.12, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "天保聖堂", x: 45.98, y: 49.76, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "天桐聖堂", x: 46.39, y: 54.84, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "香光聖堂", x: 46.78, y: 55.45, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "天母聖堂", x: 47.25, y: 53.39, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "宗和聖堂", x: 48.06, y: 52.54, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "宗祖聖堂", x: 49.55, y: 52.30, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "宗伸聖堂", x: 50.02, y: 54.60, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "玄光聖堂", x: 50.43, y: 53.87, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "崇德聖堂", x: 52.99, y: 51.09, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+            { name: "天生聖堂", x: 54.04, y: 47.09, desc: "新設立的靈性空間，指引迷途眾生回歸心靈故鄉。" },
+        ];
+
+        // --- 【關鍵修正：補上彈窗控制函數】 ---
+
+        // 開啟漂亮彈窗
+        function openShrine(name, desc) {
+            const modal = document.getElementById('shrine-modal');
+            const content = document.getElementById('modal-content');
+
+            // 注入文字
+            document.getElementById('modal-title').innerText = name;
+            document.getElementById('modal-desc').innerText = desc || "暫無介紹資訊。";
+
+            // 顯示動畫：移除隱藏類名，加入放大效果
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            content.classList.remove('scale-90');
+            content.classList.add('scale-100');
+        }
+
+        // 關閉彈窗
+        function closeShrineModal() {
+            const modal = document.getElementById('shrine-modal');
+            const content = document.getElementById('modal-content');
+
+            // 隱藏動畫
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-90');
+        }
+
+        // 點擊黑色半透明背景處也能關閉
+        window.onclick = function (event) {
+            const modal = document.getElementById('shrine-modal');
+            if (event.target == modal) {
+                closeShrineModal();
+            }
+        }
+
+        // ------------------------------------
+
+        // 2. 渲染函數
+        function renderPoints() {
+            const layer = document.getElementById('map-points-layer');
+            if (!layer) return;
+
+            layer.innerHTML = '';
+
+            templeData.forEach(point => {
+                const dot = document.createElement('div');
+                dot.className = 'absolute group/point pointer-events-auto cursor-pointer -translate-x-1/2 -translate-y-1/2';
+                dot.style.left = point.x + '%';
+                dot.style.top = point.y + '%';
+                dot.style.zIndex = "100";
+
+                dot.onclick = function (e) {
+                    e.stopPropagation();
+                    openShrine(point.name, point.desc); // 這裡現在能正確執行了
+                };
+
+                dot.innerHTML = `
+    <div class="relative flex h-8 w-8 items-center justify-center group/point">
+        <div class="absolute inset-2 bg-yellow-400 rounded-full animate-ping opacity-60 z-0"></div>
+        <div class="w-2.5 h-2.5 bg-yellow-500 rounded-full relative z-10 border border-white/40 shadow-sm group-hover/point:scale-125 transition-transform duration-300"></div>
+        <div class="opacity-0 group-hover/point:opacity-100 absolute bottom-full mb-2 whitespace-nowrap bg-black/90 backdrop-blur-md text-white text-[10px] px-2 py-1 border border-yellow-500/30 transition-all rounded pointer-events-none tracking-widest z-50 shadow-xl">
+            ${point.name}
+        </div>
+    </div>
+`;
+                layer.appendChild(dot);
+            });
+        }
+
+        // 3. 座標抓取工具 (Shift + Click)
+        const heroImg = document.querySelector('img[src*="202600316-1"]');
+        if (heroImg) {
+            heroImg.addEventListener('click', function (e) {
+                if (e.shiftKey) {
+                    const rect = this.getBoundingClientRect();
+                    const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(2);
+                    const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(2);
+                    console.log(`{ name: "新佛堂", x: ${x}, y: ${y}, desc: "" },`);
+                    alert(`座標取得：x: ${x}, y: ${y}`);
+                }
+            });
+        }
+
+        // 4. 啟動渲染
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', renderPoints);
+        } else {
+            renderPoints();
+        }
+    </script>
+    <div id="shrine-modal"
+        class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-500">
+
+        <div class="relative max-w-lg w-[90%] text-center space-y-6 bg-black/50 backdrop-blur-xl p-10 md:p-16 rounded-sm border border-white/10 shadow-2xl scale-90 transition-transform duration-500"
+            id="modal-content">
+
+            <button onclick="closeShrineModal()"
+                class="absolute top-4 right-4 text-white/50 hover:text-yellow-500 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            <p id="modal-subtitle" class="text-yellow-500 tracking-[0.6em] text-xs md:text-sm animate-pulse">FIFTY YEARS
+                | SHRINE</p>
+
+            <h2 id="modal-title" class="text-3xl md:text-4xl font-bold text-white serif tracking-[0.2em]">聖堂名稱</h2>
+
+            <div class="space-y-4">
+                <div class="w-12 h-[1px] bg-yellow-500/50 mx-auto"></div>
+                <p id="modal-desc" class="text-stone-300 text-sm md:text-base tracking-widest leading-relaxed">
+                    這裡會顯示聖堂的詳細介紹資訊。
+                </p>
+            </div>
+
+            <button onclick="closeShrineModal()"
+                class="mt-8 px-8 py-2 border border-white/20 text-white/60 text-xs tracking-[0.3em] hover:bg-white hover:text-black transition-all">
+                CLOSE
+            </button>
+        </div>
+    </div>
 
 </body>
 
