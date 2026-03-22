@@ -2,6 +2,9 @@
 <html lang="zh-TW">
 
 <head>
+    <link rel="icon" href="新春拜年貢燈祈福 (2).png" type="image/png">
+    <link rel="icon" href="favicon-32x32.png" sizes="32x32" type="image/png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>天法五十 寶光永耀 - 50 週年紀念特展</title>
@@ -10,6 +13,21 @@
         href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Noto+Sans+TC:wght@300;400&display=swap"
         rel="stylesheet">
     <style>
+        /* 平滑捲動要放在 style 標籤內 */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* 讓圖片在切換時有一種淡入並稍微放大的動態 */
+        #history-img {
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .img-changing {
+            opacity: 0;
+            transform: scale(1.05);
+        }
+
         .fade-in-section {
             opacity: 0;
             transform: translateY(30px);
@@ -297,7 +315,7 @@
 
 <body class="overflow-x-hidden">
 
-    <nav
+    <nav id="main-nav"
         class="fixed w-full z-50 px-4 md:px-6 py-3 md:py-4 flex flex-col md:flex-row justify-between items-center nav-dark shadow-2xl transition-all duration-300">
 
         <div class="flex items-center space-x-2 md:space-x-3 mb-2 md:mb-0">
@@ -340,22 +358,22 @@
                 <div class="dropdown-content">
                     <a href="event_main.html" target="_blank" class="dropdown-item">
                         <div class="flex flex-col">
-                            <span>週年大法會</span>
+                            <span>祭祖大典</span>
                             <span class="en-sub">Grand Puja</span>
                         </div>
                     </a>
                     <div class="h-[1px] bg-yellow-600/10 mx-6 my-2"></div>
                     <a href="event_exhibition.html" target="_blank" class="dropdown-item">
                         <div class="flex flex-col">
-                            <span>藝術文物展</span>
-                            <span class="en-sub">Sacred Art Exhibition</span>
+                            <span>寶光音樂會</span>
+                            <span class="en-sub">Sacred Music Concert</span>
                         </div>
                     </a>
                     <div class="h-[1px] bg-yellow-600/10 mx-6 my-2"></div>
                     <a href="event_charity.html" target="_blank" class="dropdown-item">
                         <div class="flex flex-col">
-                            <span>慈善園遊會</span>
-                            <span class="en-sub">Charity Bazaar</span>
+                            <span>祭天大典</span>
+                            <span class="en-sub">Grand Sacrifice</span>
                         </div>
                     </a>
                 </div>
@@ -385,13 +403,20 @@
 
         <div class="relative z-10 text-center space-y-8 fade-in-up">
             <p class="text-yellow-800 tracking-[0.8em] text-sm md:text-base font-bold">1976 - 2026</p>
-            <h1 class="text-4xl md:text-7xl font-black bao-guang-text pb-4 tracking-[0.3em] drop-shadow-sm">天法五十<br
-                    class="md:hidden"> 寶光永耀</h1>
-            <div class="w-24 h-[2px] bg-yellow-700/50 mx-auto"></div>
-            <p class="max-w-2xl mx-auto text-gray-800 font-medium tracking-[0.2em] leading-relaxed italic">
+
+            <h1
+                class="text-4xl md:text-7xl font-black bao-guang-text pb-4 tracking-[0.3em] drop-shadow-sm delay-[300ms]">
+                天法五十<br class="md:hidden"> 寶光永耀
+            </h1>
+
+            <div class="w-24 h-[2px] bg-yellow-700/50 mx-auto delay-[500ms]"></div>
+
+            <p
+                class="max-w-2xl mx-auto text-gray-800 font-medium tracking-[0.2em] leading-relaxed italic delay-[700ms]">
                 「半世紀的傳承，一世的守護。<br>於此輝煌時刻，我們共聚一心，續寫璀璨篇章。」
             </p>
-            <div class="pt-6 flex justify-center">
+
+            <div class="pt-6 flex justify-center delay-[1000ms]">
                 <a href="#history"
                     class="group relative px-12 py-4 text-sm tracking-widest overflow-hidden rounded-full border-2 border-yellow-700 bg-white/50 backdrop-blur-sm transition-all duration-500 hover:bg-yellow-700 shadow-xl">
                     <span
@@ -465,7 +490,7 @@
                     <div
                         class="relative z-10 aspect-[4/5] bg-white p-3 shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-yellow-600/20 rounded-sm">
                         <img id="history-img" src="新春拜年貢燈祈福 (2).png"
-                            class="w-full h-full object-cover transition-opacity duration-700 grayscale-[0.3] hover:grayscale-0">
+                            class="w-full h-full object-cover transition-all duration-700 ease-in-out opacity-100 grayscale-[0.3] hover:grayscale-0">
                         <div
                             class="absolute bottom-6 left-6 text-white text-[10px] tracking-[0.2em] bg-black/40 backdrop-blur-sm px-3 py-1">
                             HISTORICAL ARCHIVE / 2026
@@ -562,53 +587,72 @@
     <footer class="py-10 text-center text-gray-500 text-xs bg-white border-t">
         <p>© 2026 天法五十 寶光永耀 紀念委員會. All Rights Reserved.</p>
     </footer>
-
-    <script>
+    <script>// 1. 五十載歷史圖片切換 (加入縮放效果)
         function changeHistoryImage(imageUrl) {
             const imgElement = document.getElementById('history-img');
-            imgElement.style.opacity = 0;
+            // 加入縮放並淡出的類名
+            imgElement.classList.add('img-changing');
+
             setTimeout(() => {
                 imgElement.src = imageUrl;
-                imgElement.style.opacity = 1;
-            }, 300);
-        }
+                // 換圖後移除類名，觸發淡入與縮放回位
+                imgElement.classList.remove('img-changing');
+            }, 400); // 對應 CSS 的 transition 時間
+        }</script>
 
+    <script>// 2. 故事展示邏輯
         function showStory(title, content) {
             const displayZone = document.getElementById('story-display');
             const titleElement = document.getElementById('story-title');
             const contentElement = document.getElementById('story-content');
-            if (displayZone.classList.contains('hidden')) { displayZone.classList.remove('hidden'); }
+
+            if (displayZone.classList.contains('hidden')) {
+                displayZone.classList.remove('hidden');
+            }
             displayZone.style.opacity = '0';
+
             setTimeout(() => {
                 titleElement.innerText = title;
                 contentElement.innerText = content;
                 displayZone.style.opacity = '1';
                 displayZone.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }, 100);
-        }
+        }</script>
 
-        function closeStory() {
+    <script>function closeStory() {
             const displayZone = document.getElementById('story-display');
             displayZone.style.opacity = '0';
             setTimeout(() => { displayZone.classList.add('hidden'); }, 300);
         }
-    </script>
-    <script>
-        // 這是剛才那個自動偵測捲動的程式碼
+
+        // 3. 智慧導覽列優化 (合併後的邏輯)
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('main-nav');
+            if (window.scrollY > 80) {
+                // 捲動中：加深背景、縮小高度、增加毛玻璃
+                nav.classList.add('bg-black/90', 'backdrop-blur-md', 'py-2');
+                nav.classList.remove('py-3', 'md:py-4', 'nav-dark');
+            } else {
+                // 回到頂部：恢復大氣的初始樣式
+                nav.classList.add('nav-dark', 'py-3', 'md:py-4');
+                nav.classList.remove('bg-black/90', 'backdrop-blur-md', 'py-2');
+            }
+        });</script>
+
+    <script>// 4. Scroll Reveal 自動偵測 (Intersection Observer)
         const observerOptions = { threshold: 0.1 };
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible'); // 看到時加上這個 class
+                    entry.target.classList.add('is-visible');
                 }
             });
         }, observerOptions);
 
-        // 叫電腦去找網頁裡所有叫 fade-in-section 的地方
         document.querySelectorAll('.fade-in-section').forEach(section => {
             observer.observe(section);
-        });
-    </script>
+        });</script>
+
 </body>
 
 </html>
