@@ -12,6 +12,149 @@
         href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Noto+Sans+TC:wght@300;400&display=swap"
         rel="stylesheet">
     <style>
+        /* 讓背景圖案持續且穩定地向左流動 */
+        @keyframes steadyScroll {
+            from {
+                background-position: 0 0;
+            }
+
+            to {
+                background-position: -1000px 0;
+            }
+        }
+
+        .scroll-bg {
+            animation: steadyScroll 60s linear infinite;
+            background-repeat: repeat-x;
+            background-size: contain;
+        }
+
+        /* 霧化過渡效果：加上 blur (模糊) 讓消失更像煙霧 */
+        .mist-transition {
+            transition: opacity 2s ease-in-out, filter 2s ease-in-out;
+        }
+
+        .mist-hidden {
+            opacity: 0 !important;
+            filter: blur(15px);
+            /* 散開成霧的關鍵 */
+        }
+
+        /* 背景煙霧呼吸動畫 */
+        @keyframes fog-move {
+
+            0%,
+            100% {
+                opacity: 0.1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.3;
+                transform: scale(1.1) translateX(10px);
+            }
+        }
+
+        /* 強化底部文字莊嚴感 */
+        .temple-label {
+            font-size: 1rem;
+            /* 放大字體 */
+            letter-spacing: 0.8em;
+            /* 增加間距 */
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        /* 對話文字：淡入淡出速度 (對齊人偶的 1s) */
+        .dialog-text {
+            transition: opacity 1s ease-in-out;
+            font-size: 1.25rem;
+            /* 放大對話文字 */
+            line-height: 1.8;
+        }
+
+        #puppets-walker {
+            animation: walking 1.5s ease-in-out infinite;
+        }
+
+        /* 確保外層移動平滑 */
+        #puppets-mover {
+            /* opacity 給 1秒的淡入淡出，transform 給 0秒讓它瞬移 */
+            transition: opacity 1s ease-in-out, transform 0s;
+            will-change: transform;
+        }
+
+        @keyframes walking {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            /* 輕微往上跳一下 */
+        }
+
+        #side-puppets {
+            /* 當 JS 改變 transform 時，它會平滑移動，我們在移動中加上走路律動 */
+            transition: transform 2.5s cubic-bezier(0.45, 0.05, 0.55, 0.95), opacity 1s;
+        }
+
+        /* 只有在移動時我們可以手動幫它加一個動畫 Class 或直接維持輕微呼吸感 */
+        #side-puppets {
+            animation: walking 2s ease-in-out infinite;
+        }
+
+        #inheritance-canvas {
+            position: absolute;
+            inset: 0;
+            z-index: 5;
+            /* 低於文字 */
+            pointer-events: none;
+        }
+
+        /* 儀式文字顯示狀態 */
+        /* 必須確保 .show 類別能覆蓋掉原本的 opacity-0 */
+        .ceremony-text.show {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+
+        .ceremony-text {
+            position: relative;
+            z-index: 10;
+            /* 高於畫布 */
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* 點擊噴發時的畫面震撼感 */
+        .flash-white {
+            animation: flash-animation 1.5s ease-out forwards;
+        }
+
+        @keyframes flash-animation {
+            0% {
+                background-color: rgba(255, 215, 0, 0);
+            }
+
+            10% {
+                background-color: rgba(255, 215, 0, 0.15);
+            }
+
+            100% {
+                background-color: rgba(255, 215, 0, 0);
+            }
+        }
+
+        /* 當面板開啟時，禁止全網頁縱向捲動 */
+        .no-scroll {
+            overflow: hidden !important;
+        }
+
         /* --- [1. 區塊浮現] 讓頁面有呼吸感 --- */
         .fade-up-obs {
             opacity: 0;
@@ -470,10 +613,153 @@
                 filter: blur(0);
             }
         }
+
+        /* --- 敘事面板：莊嚴金邊樣式 --- */
+        #narrative-panel {
+            position: fixed;
+            left: 40px;
+            top: 50%;
+            transform: translateY(-50%) translateX(-20px);
+            width: 320px;
+            background: linear-gradient(135deg, rgba(15, 13, 10, 0.95) 0%, rgba(30, 25, 20, 0.9) 100%);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(196, 164, 124, 0.4);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(196, 164, 124, 0.05);
+            padding: 32px;
+            z-index: 1000;
+            transition: all 1s cubic-bezier(0.22, 1, 0.36, 1);
+            border-radius: 2px;
+            opacity: 0;
+            visibility: hidden;
+            max-height: 80vh;
+            overflow-y: auto;
+            scrollbar-width: none;
+            overscroll-behavior: contain;
+            /* 【新增】防止面板捲到底後觸發背景捲動 */
+            /* 隱藏捲軸但可捲動 */
+            /* 讓長文案可以上下捲動 */
+        }
+
+        #narrative-panel::-webkit-scrollbar {
+            display: none;
+        }
+
+        .close-panel-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: rgba(196, 164, 124, 0.6);
+            cursor: pointer;
+            font-size: 20px;
+            transition: color 0.3s;
+            z-index: 1001;
+        }
+
+        .close-panel-btn:hover {
+            color: #facc15;
+        }
+
+        /* 2. 底部引導金線 */
+        #scroll-guide-line {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #c4a47c, transparent);
+            transition: all 1s ease;
+            z-index: 100;
+        }
+
+        /* 底部金線的兩種狀態：橫線與箭頭 */
+        .line-horizontal {
+            width: 200px;
+        }
+
+        .line-arrow-down {
+            width: 1px;
+            height: 40px;
+            background: #c4a47c;
+        }
+
+        /* 箭頭的小尖尖 */
+        .line-arrow-down::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -4px;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 8px solid #c4a47c;
+        }
+
+        /* 內層裝飾細金線 */
+        #narrative-panel::before {
+            content: "";
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            border: 1px solid rgba(196, 164, 124, 0.15);
+            pointer-events: none;
+        }
+
+        #narrative-panel.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(-50%) translateX(0);
+        }
+
+        .panel-text-animate {
+            animation: fadeInUp 1.5s ease-out forwards;
+        }
+
+        @keyframes textBlurIn {
+            0% {
+                filter: blur(8px);
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            100% {
+                filter: blur(0);
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 光點基礎樣式優化 */
+        .map-point {
+            transition: opacity 1.2s ease, transform 1.2s ease;
+            will-change: opacity, transform;
+        }
+
+        @media (max-width: 768px) {
+            #narrative-panel {
+                left: 0;
+                top: auto;
+                bottom: 0;
+                width: 100%;
+                transform: none;
+                border-width: 1px 0 0 0;
+            }
+        }
     </style>
 </head>
 
 <body class="overflow-x-hidden">
+    <div id="narrative-panel">
+        <div class="close-panel-btn" onclick="closeNarrative()">✕</div>
+        <div class="flex items-center gap-2 mb-6">
+            <div class="w-8 h-[1px] bg-yellow-600/50"></div>
+            <span class="text-[10px] text-yellow-600/80 tracking-[0.4em] uppercase">Chronicle</span>
+        </div>
+        <h3 id="panel-title" class="text-yellow-500 font-serif text-3xl mb-4 tracking-[0.2em] font-bold"></h3>
+        <div class="w-full h-[1px] bg-gradient-to-r from-yellow-600/30 to-transparent mb-6"></div>
+        <div id="panel-content" class="text-stone-300 text-sm leading-8 tracking-[0.15em] font-light text-justify pr-2">
+        </div>
+    </div>
 
     <nav id="main-nav"
         class="fixed w-full z-50 px-4 md:px-6 py-3 md:py-4 flex flex-col md:flex-row justify-between items-center nav-dark shadow-2xl transition-all duration-300">
@@ -539,14 +825,11 @@
                 </div>
             </div>
 
-            <a href="#blessing"
-                class="group relative px-3 py-1 md:px-6 md:py-2 tracking-widest overflow-hidden rounded-full border border-yellow-700 bg-black/50 backdrop-blur-sm transition-all duration-500 hover:border-white btn-pray">
+            <a href="merch.html"
+                class="group relative px-5 py-1.5 border border-yellow-800/60 rounded-full transition-all duration-500 hover:border-yellow-400">
                 <span
-                    class="absolute inset-0 translate-y-full rounded-full bg-gradient-to-r from-yellow-700 via-yellow-400 to-yellow-700 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500"></span>
-
-                <span
-                    class="relative z-10 text-yellow-500 font-bold group-hover:text-black transition duration-500 text-[10px] md:text-xs">
-                    線上祈福
+                    class="relative z-10 text-yellow-600/90 group-hover:text-yellow-400 font-serif text-xs md:text-sm tracking-[0.2em]">
+                    紀念小物
                 </span>
             </a>
         </div>
@@ -611,42 +894,192 @@
     </style>
 
     <script>
-        const wrapper = document.getElementById('hero-map-wrapper');
-
-        // 1. 自動置中功能 (讓大家進來先看到地圖中央)
         window.addEventListener('load', () => {
-            const scrollAmount = (wrapper.scrollWidth - wrapper.clientWidth) / 2;
-            wrapper.scrollTo({ left: scrollAmount, behavior: 'smooth' });
+            // --- [1. 變數初始化] ---
+            const wrapper = document.getElementById('hero-map-wrapper');
+            const panel = document.getElementById('narrative-panel');
+            const pTitle = document.getElementById('panel-title');
+            const pContent = document.getElementById('panel-content');
+            const guideLine = document.getElementById('scroll-guide-line');
+            const ceremonySection = document.getElementById('future-blessing');
+
+            if (!wrapper || !panel) return;
+
+            // 強制歸零
+            wrapper.scrollLeft = 0;
+
+            // 地圖煞車點位
+            const stops = [
+                { pos: 0.12, title: "昔", text: "講寶光玉山的五十年，一定要從王老前人說起，27 歲，原本是地方富商。如果那艘船沒有沉。如果咖啡豆順利送達香港，他的人生，也許只是成功商人。但--船沉了。整艘船，沉入海底。那不是損失，那是命運轉向，因為沉船，他求道。因為沉船，他領命。因為沉船，才有今天的寶光玉山。有時候，失去，是為了承擔更大的使命，那是風聲鶴唳的年代，戒嚴，查緝，壓力，但老前人沒有退，十年間，道務從高雄台南嘉義，拓展到台北，那時玉山還不存在，但方向，早已存在。" },
+                { pos: 0.65, title: "今", text: "五十載光陰，那是從前的來時路。法脈傳承，是歲月點點滴滴的累積，老前人不只留下的玉山，還有禮樂大道，而如今，他雖已離去，但法脈仍在，傳承不息。如同他的筆名所述，用一生來復興儒家的禮樂大道，這是他留給所有道親，最寶貴的財富" },
+                { pos: 1, title: "未", text: "接過火炬，繼續前行。玉山天法，永耀五十。" }
+            ];
+            let triggered = new Set();
+
+            // --- [2. 全域函數定義] ---
+
+            // 關閉面板函數
+            window.closeNarrative = function () {
+                panel.classList.remove('active');
+                wrapper.style.overflowX = 'auto'; // 解鎖地圖橫向捲動
+                document.body.classList.remove('no-scroll'); // 解鎖全網頁縱向捲動
+            };
+
+            // 金色粒子噴發特效
+            window.triggerInheritance = function () {
+                const canvas = document.getElementById('inheritance-canvas');
+                const ctx = canvas.getContext('2d');
+
+                // 畫面閃爍震撼
+                ceremonySection.classList.add('flash-white');
+                setTimeout(() => ceremonySection.classList.remove('flash-white'), 1500);
+
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+
+                let particles = [];
+                const colors = ['#facc15', '#eab308', '#ca8a04', '#ffffff'];
+
+                class Particle {
+                    constructor() {
+                        this.x = canvas.width / 2;
+                        this.y = canvas.height / 2 + 50;
+                        this.size = Math.random() * 4 + 1;
+                        this.speedX = (Math.random() - 0.5) * 12;
+                        this.speedY = (Math.random() - 0.7) * 12;
+                        this.color = colors[Math.floor(Math.random() * colors.length)];
+                        this.opacity = 1;
+                    }
+                    update() {
+                        this.x += this.speedX;
+                        this.y += this.speedY;
+                        this.speedY += 0.05; // 增加重力感
+                        this.opacity -= 0.008;
+                    }
+                    draw() {
+                        ctx.fillStyle = this.color;
+                        ctx.globalAlpha = this.opacity;
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+
+                function createParticles() {
+                    for (let i = 0; i < 120; i++) {
+                        particles.push(new Particle());
+                    }
+                }
+
+                function animate() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    particles.forEach((p, i) => {
+                        p.update();
+                        p.draw();
+                        if (p.opacity <= 0) particles.splice(i, 1);
+                    });
+                    if (particles.length > 0) {
+                        requestAnimationFrame(animate);
+                    }
+                }
+
+                createParticles();
+                animate();
+            };
+
+            // --- [3. 監聽器與觀察器] ---
+
+            // 偵測最底部的三幕式文字浮現
+            const ceremonyObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const texts = entry.target.querySelectorAll('.ceremony-text');
+                        texts.forEach((text, index) => {
+                            setTimeout(() => {
+                                text.classList.add('show');
+                            }, index * 1200);
+                        });
+                        ceremonyObserver.unobserve(entry.target); // 只觸發一次
+                    }
+                });
+            }, { threshold: 0.2 });
+
+            if (ceremonySection) ceremonyObserver.observe(ceremonySection);
+
+            // 地圖捲動邏輯
+            wrapper.addEventListener('scroll', () => {
+                let percent = wrapper.scrollLeft / (wrapper.scrollWidth - wrapper.clientWidth);
+
+                // A. 光點消失邏輯
+                const points = document.querySelectorAll('.map-point');
+                points.forEach(point => {
+                    const pointOffset = point.offsetLeft;
+                    const viewLeft = wrapper.scrollLeft;
+                    const viewRight = wrapper.scrollLeft + wrapper.clientWidth;
+                    if (pointOffset > viewLeft + 300 && pointOffset < viewRight - 300) {
+                        point.style.opacity = "1";
+                        point.style.transform = "scale(1) translate(-50%, -50%)";
+                    } else {
+                        point.style.opacity = "0";
+                        point.style.transform = "scale(0.7) translate(-50%, -50%)";
+                    }
+                });
+
+                // B. 引導金線變形
+                if (guideLine) {
+                    if (percent > 0.96) {
+                        guideLine.style.width = "1px";
+                        guideLine.style.height = "40px";
+                        guideLine.classList.add('line-arrow-down');
+                    } else {
+                        guideLine.style.width = "200px";
+                        guideLine.style.height = "1px";
+                        guideLine.classList.remove('line-arrow-down');
+                    }
+                }
+
+                // C. 煞車邏輯
+                stops.forEach((stop, index) => {
+                    if (Math.abs(percent - stop.pos) < 0.02 && !triggered.has(index)) {
+                        wrapper.style.overflowX = 'hidden';
+                        document.body.classList.add('no-scroll');
+                        isMouseDown = false;
+                        triggered.add(index);
+
+                        pTitle.innerText = stop.title;
+                        pContent.innerText = stop.text;
+
+                        pTitle.classList.remove('panel-text-animate');
+                        pContent.classList.remove('panel-text-animate');
+                        void pTitle.offsetWidth; // 強制重繪觸發動畫
+                        pTitle.classList.add('panel-text-animate');
+                        pContent.classList.add('panel-text-animate');
+
+                        panel.classList.add('active');
+                    }
+                });
+            });
+
+            // --- [4. 拖拽邏輯] ---
+            let isMouseDown = false;
+            let startX, scrollLeftPos;
+
+            wrapper.addEventListener('mousedown', (e) => {
+                if (wrapper.style.overflowX === 'hidden') return;
+                isMouseDown = true;
+                startX = e.pageX - wrapper.offsetLeft;
+                scrollLeftPos = wrapper.scrollLeft;
+            });
+
+            window.addEventListener('mouseup', () => isMouseDown = false);
+            wrapper.addEventListener('mousemove', (e) => {
+                if (!isMouseDown || wrapper.style.overflowX === 'hidden') return;
+                e.preventDefault();
+                const x = e.pageX - wrapper.offsetLeft;
+                const walk = (x - startX) * 1.5;
+                wrapper.scrollLeft = scrollLeftPos - walk;
+            });
         });
-
-        // 2. 滑鼠拖動邏輯 (修正不能滑的問題)
-        let isMouseDown = false;
-        let startX;
-        let scrollLeft;
-
-        wrapper.addEventListener('mousedown', (e) => {
-            isMouseDown = true;
-            wrapper.classList.add('active');
-            startX = e.pageX - wrapper.offsetLeft;
-            scrollLeft = wrapper.scrollLeft;
-        });
-
-        wrapper.addEventListener('mouseleave', () => { isMouseDown = false; });
-        wrapper.addEventListener('mouseup', () => { isMouseDown = false; });
-
-        wrapper.addEventListener('mousemove', (e) => {
-            if (!isMouseDown) return;
-            e.preventDefault();
-            const x = e.pageX - wrapper.offsetLeft;
-            const walk = (x - startX) * 2; // 調整捲動速度
-            wrapper.scrollLeft = scrollLeft - walk;
-        });
-
-        // 3. 按鈕捲動功能
-        function scrollMap(direction) {
-            const amount = direction === 'left' ? -400 : 400;
-            wrapper.scrollBy({ left: amount, behavior: 'smooth' });
-        }
     </script>
 
     <section id="golden-scroll"
@@ -809,71 +1242,248 @@
             content.classList.remove('scale-y-100', 'opacity-100');
         }
     </script>
-    <section id="future-blessing" class="fade-in-section py-24 px-6 bg-[#1a1815] text-center overflow-hidden">
-        <div class="max-w-4xl mx-auto">
-            <div class="mb-16">
-                <h2 class="text-3xl font-bold text-[#c4a47c] tracking-[0.6em] mb-4">領取平安指引</h2>
-                <p class="text-stone-500 text-[10px] tracking-[0.3em] uppercase">Your Spiritual Guidance for the Future
-                </p>
+    <section id="future-blessing"
+        class="relative w-screen h-screen bg-black overflow-hidden flex flex-col justify-center items-center">
+
+        <div class="absolute top-12 z-30 w-full flex justify-center">
+            <div id="corridor-script"
+                class="min-h-[110px] max-w-2xl text-yellow-600 text-2xl font-serif tracking-[0.4em] leading-loose opacity-0 transition-opacity duration-1000 bg-black/70 px-10 py-6 rounded-full border border-yellow-900/30 shadow-2xl text-center flex items-center justify-center">
+            </div>
+        </div>
+
+        <div id="time-corridor"
+            class="relative z-10 w-full max-w-[1400px] h-[550px] flex items-center overflow-hidden rounded-xl border border-yellow-900/20 bg-stone-950/30">
+
+            <div class="relative w-1/3 h-full border-r border-white/5 overflow-hidden bg-black">
+                <div class="corridor-bg absolute inset-0 opacity-0 transition-all duration-[3000ms] z-0"
+                    style="background: radial-gradient(circle at center, #222, #000);"></div>
+                <div
+                    class="absolute inset-0 z-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 animate-pulse">
+                </div>
+
+                <div class="absolute inset-0 z-10 pointer-events-none opacity-20">
+                    <svg class="w-full h-full" viewBox="0 0 400 500">
+                        <path d="M 0 50 L 400 50 M 0 450 L 400 450" stroke="#888" stroke-width="0.5" fill="none" />
+                        <path d="M 50 100 Q 100 80, 150 100 T 250 100" stroke="#444" fill="none" />
+                    </svg>
+                </div>
+
+                <div
+                    class="dialog-text absolute top-1/4 left-1/2 -translate-x-1/2 w-4/5 text-center text-stone-200 font-serif opacity-0 transition-opacity duration-1000 z-30">
+                </div>
+                <div
+                    class="temple-label absolute bottom-10 w-full text-center text-stone-500 font-serif uppercase z-20">
+                    一九七六 · 開山印記</div>
             </div>
 
-            <div class="relative w-48 h-72 mx-auto cursor-pointer perspective-1000 group" onclick="flipAmulet()">
-                <div id="amulet-card" class="relative w-full h-full transition-transform duration-1000 preserve-3d">
+            <div class="relative w-1/3 h-full border-r border-yellow-900/10 overflow-hidden bg-black">
+                <div class="corridor-bg absolute inset-0 opacity-0 transition-all duration-[3000ms] z-0"
+                    style="background: radial-gradient(circle at center, #2c1e0f, #000);"></div>
 
-                    <div
-                        class="absolute inset-0 border-2 border-[#c4a47c]/50 rounded-sm flex flex-col items-center justify-center bg-stone-900 backface-hidden shadow-[0_0_20px_rgba(196,164,124,0.2)]">
-                        <div class="w-12 h-12 border border-[#c4a47c] rotate-45 flex items-center justify-center mb-6">
-                            <span class="text-[#c4a47c] -rotate-45 serif font-bold">平安</span>
-                        </div>
-                        <div class="space-y-2">
-                            <div class="w-24 h-[1px] bg-gradient-to-r from-transparent via-[#c4a47c]/50 to-transparent">
-                            </div>
-                            <p class="text-[#c4a47c]/80 text-[10px] tracking-[0.5em] uppercase">Click to Reveal</p>
-                            <div class="w-24 h-[1px] bg-gradient-to-r from-transparent via-[#c4a47c]/50 to-transparent">
-                            </div>
-                        </div>
-                        <div class="absolute top-2 left-2 w-4 h-4 border-t border-l border-[#c4a47c]/30"></div>
-                        <div class="absolute bottom-2 right-2 w-4 h-4 border-b border-r border-[#c4a47c]/30"></div>
-                    </div>
+                <div class="absolute inset-0 z-10 pointer-events-none opacity-30">
+                    <svg class="w-full h-full" viewBox="0 0 400 500">
+                        <circle cx="200" cy="200" r="150" stroke="#D69E2E" stroke-width="0.3" fill="none"
+                            stroke-dasharray="4 4" />
+                        <path d="M 0 50 L 400 50 M 0 450 L 400 450" stroke="#D69E2E" stroke-width="0.5" fill="none" />
+                    </svg>
+                </div>
 
-                    <div
-                        class="absolute inset-0 border-2 border-[#c4a47c] rounded-sm flex flex-col items-center justify-center bg-[#fdfcf8] rotate-y-180 backface-hidden shadow-2xl p-6 amulet-glow">
-                        <p class="text-stone-400 text-[10px] tracking-widest mb-4 uppercase">Guidance</p>
-                        <div id="guidance-text"
-                            class="text-stone-800 serif text-lg leading-relaxed tracking-widest font-bold">
-                            心安，即是歸處
-                        </div>
-                        <div class="mt-6 w-8 h-[2px] bg-yellow-700/30"></div>
+                <div
+                    class="dialog-text absolute top-1/4 left-1/2 -translate-x-1/2 w-4/5 text-center text-yellow-100 font-serif opacity-0 transition-opacity duration-1000 z-30">
+                </div>
+                <div
+                    class="temple-label absolute bottom-10 w-full text-center text-yellow-800 font-serif uppercase z-20">
+                    二〇二六 · 法脈重鎮</div>
+            </div>
+
+            <div class="relative w-1/3 h-full overflow-hidden bg-black">
+                <div class="corridor-bg absolute inset-0 opacity-0 transition-all duration-[3000ms] z-0"
+                    style="background: radial-gradient(circle at center, #0f1c2c, #000);"></div>
+
+                <div class="absolute inset-0 z-10 pointer-events-none opacity-20">
+                    <svg class="w-full h-full" viewBox="0 0 400 500">
+                        <path d="M 0 50 L 400 50 M 0 450 L 400 450" stroke="#4A5568" stroke-width="0.5" fill="none" />
+                        <path d="M 0 400 C 100 380, 200 420, 400 400" stroke="#718096" fill="none" stroke-width="1" />
+                    </svg>
+                </div>
+
+                <div
+                    class="dialog-text absolute top-1/4 left-1/2 -translate-x-1/2 w-4/5 text-center text-blue-100 font-serif opacity-0 transition-opacity duration-1000 z-30">
+                </div>
+                <div
+                    class="temple-label absolute bottom-10 w-full text-center text-yellow-600 font-serif uppercase z-20">
+                    未來 · 萬國九州</div>
+            </div>
+            <div id="final-legacy-text"
+                class="absolute inset-0 flex flex-col items-center justify-center opacity-0 transition-all duration-[4000ms] z-50 pointer-events-none">
+                <h2
+                    class="text-yellow-500 font-serif tracking-[1.2em] text-3xl md:text-4xl mb-32 drop-shadow-[0_0_20px_rgba(214,158,46,0.8)]">
+                    天法五十 · 傳承有我
+                </h2>
+            </div>
+
+            <div id="puppet-stage" class="absolute inset-0 z-20 flex items-end pb-20 pointer-events-none">
+                <div id="puppets-mover" class="relative transition-all duration-[2500ms] ease-in-out opacity-0"
+                    style="width: 280px; transform: translateX(5%);">
+
+                    <div id="puppets-walker" class="relative flex items-end space-x-[-40px]">
+
+                        <img src="./elder-puppet.png" alt="師父"
+                            class="relative w-28 h-auto object-contain bottom-[-10px] opacity-80 filter drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+
+                        <img src="./youth-puppet.png" alt="弟子"
+                            class="relative w-24 h-auto object-contain bottom-[0px] opacity-70 filter drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
                     </div>
                 </div>
             </div>
-
-            <p class="mt-12 text-stone-600 text-[10px] tracking-[0.4em] animate-pulse">點擊平安符 · 抽取今日守護</p>
         </div>
+
     </section>
 
-    <style>
-        /* 這裡補充互動需要的特殊 CSS */
-        .perspective-1000 {
-            perspective: 1000px;
+    <script>
+        // 1. 打字機效果
+        function typeWriter(element, text, speed = 80) {
+            let i = 0;
+            element.innerHTML = "";
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
         }
 
-        .preserve-3d {
-            transform-style: preserve-3d;
+        // 2. 時空長廊啟動邏輯
+        function runTimeCorridor() {
+            const dialogs = document.querySelectorAll('.dialog-text');
+            const bgs = document.querySelectorAll('.corridor-bg');
+            const puppets = document.getElementById('puppets-mover');
+            const final = document.getElementById('final-legacy-text');
+
+            const story = [
+                { text: "五十載前，前輩於荒煙蔓草間徒手開山。\n那時燈火雖微，卻點燃了傳承不滅的薪火。", pos: "50%" },
+                { text: "今日，法脈於此匯聚成海，萬眾一心。\n守護這座心靈的重鎮，在集體修持中見證法喜。", pos: "220%" },
+                { text: "未來，法船將揚帆遠航，跨越五大洋。\n讓天法的智慧遍灑九州，由我們共同塑造輝煌。", pos: "385%" }
+            ];
+
+            let delay = 1000;
+            story.forEach((scene, index) => {
+                setTimeout(() => {
+                    // 1. 同步顯現：移除霧化隱藏，並顯示
+                    if (bgs[index]) {
+                        bgs[index].classList.remove('mist-hidden');
+                        bgs[index].style.opacity = "1";
+                    }
+                    if (puppets) {
+                        puppets.style.opacity = "1";
+                        puppets.style.transform = `translateX(${scene.pos})`;
+                    }
+                    if (dialogs[index]) {
+                        dialogs[index].classList.remove('mist-hidden');
+                        dialogs[index].style.opacity = "1";
+                        typeWriter(dialogs[index], scene.text, 100);
+                    }
+
+                    // 2. 同步霧化消失 (設定在下一幕開始前 2.5 秒)
+                    const exitTime = 8000;
+                    if (index < story.length) {
+                        setTimeout(() => {
+                            if (bgs[index]) bgs[index].classList.add('mist-hidden');
+                            if (dialogs[index]) dialogs[index].classList.add('mist-hidden');
+                            if (puppets) puppets.style.opacity = "0"; // 人偶同步淡出
+                        }, exitTime);
+                    }
+                }, delay);
+                delay += 11000;
+            });
+
+            // 最終結尾回到中間的邏輯
+            setTimeout(() => {
+                if (puppets) {
+                    // 1. 徹底關閉所有過渡效果
+                    puppets.style.transition = "none";
+
+                    // 2. 使用百分比定位：將人偶的左側推到長廊的 50%，再往回拉人偶寬度的一半
+                    // 這樣無論螢幕多寬，兩個人偶都會在正中間
+                    puppets.style.position = "absolute";
+                    puppets.style.left = "52.5%";
+                    puppets.style.transform = "translateX(-50%)";
+
+                    // 3. 確保透明度是 0，準備做顯影動畫
+                    puppets.style.opacity = "0";
+
+                    // 4. 觸發顯影動畫
+                    setTimeout(() => {
+                        puppets.style.transition = "opacity 3s ease-in-out, filter 3s ease-in-out";
+                        puppets.style.opacity = "1";
+                        puppets.style.filter = "drop-shadow(0 0 20px rgba(214, 158, 46, 0.6))";
+                    }, 100);
+                }
+
+                // 背景轉變為金燦燦 (這部分你的代碼跑得動，保留)
+                const bgs = document.querySelectorAll('.corridor-bg');
+                bgs.forEach(bg => {
+                    bg.style.opacity = "1";
+                    bg.style.background = "radial-gradient(circle at center, #5a452a, #1a1510, #000)";
+                    bg.style.filter = "brightness(1.2)";
+                });
+
+                if (final) {
+                    final.style.opacity = "1";
+                }
+            }, (story.length * 11000) + 500);
         }
 
-        .backface-hidden {
-            backface-visibility: hidden;
-        }
+        // 唯一的觸發器
+        const finalObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    runTimeCorridor();
+                    finalObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
 
-        .rotate-y-180 {
-            transform: rotateY(180deg);
-        }
+        const target = document.getElementById('future-blessing');
+        if (target) finalObserver.observe(target);
 
-        .flipped {
-            transform: rotateY(180deg);
-        }
-    </style>
+        // 4. 原有的導引軸邏輯 (保持不變，但確保 ID 對齊)
+        window.addEventListener('scroll', () => {
+            const sections = [
+                { id: 'guide-overlay', navId: 'nav-past' },
+                { id: 'golden-scroll', navId: 'nav-present' },
+                { id: 'future-blessing', navId: 'nav-future' }
+            ];
+
+            let currentActive = "";
+            sections.forEach(section => {
+                const el = document.getElementById(section.id);
+                if (el) {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.top <= window.innerHeight / 2) {
+                        currentActive = section.navId;
+                    }
+                }
+            });
+
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
+                currentActive = 'nav-future';
+            }
+
+            sections.forEach(section => {
+                const navEl = document.getElementById(section.navId);
+                if (navEl) {
+                    if (section.navId === currentActive) {
+                        navEl.classList.add('active');
+                    } else {
+                        navEl.classList.remove('active');
+                    }
+                }
+            });
+        });</script>
+
 
     <script>
         // 隨機法語陣列
@@ -1060,7 +1670,8 @@
 
             templeData.forEach(point => {
                 const dot = document.createElement('div');
-                dot.className = 'absolute group/point pointer-events-auto cursor-pointer -translate-x-1/2 -translate-y-1/2';
+                // 請找到 renderPoints 裡面的循環，確保 className 長這樣：
+                dot.className = 'map-point absolute group/point pointer-events-auto cursor-pointer -translate-x-1/2 -translate-y-1/2 opacity-0 scale-75 transition-all duration-1000';
                 dot.style.left = point.x + '%';
                 dot.style.top = point.y + '%';
                 dot.style.zIndex = "100";

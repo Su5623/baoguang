@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <link rel="icon" href="./mark1.png" type="image/png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>珍藏印記 - 天法五十紀念小物</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #050505;
+            color: #d6d3d1;
+            font-family: 'Noto Serif TC', serif;
+        }
+
+        .glass-card {
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(120, 90, 40, 0.2);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(214, 158, 46, 0.5);
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        }
+    </style>
+</head>
+
+<body class="overflow-x-hidden">
+
+    <nav
+        class="fixed top-0 w-full z-50 px-8 py-5 flex justify-between items-center bg-black/60 backdrop-blur-md border-b border-yellow-900/20">
+        <a href="index.html"
+            class="group flex items-center gap-3 text-yellow-600 hover:text-yellow-400 transition-all duration-300">
+            <span
+                class="w-8 h-8 rounded-full border border-yellow-800/50 flex items-center justify-center group-hover:border-yellow-400 transition-colors">
+                <span class="text-lg">←</span>
+            </span>
+            <span class="tracking-[0.3em] text-sm md:text-base font-serif font-bold">返回五十週年特展</span>
+        </a>
+
+        <div class="hidden md:block text-yellow-900/50 font-serif text-xs tracking-[0.5em] uppercase">
+            Since 1976 · Bao Guang
+        </div>
+    </nav>
+
+    <header class="pt-40 pb-24 text-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_#2a2015_0%,_transparent_75%)] opacity-80">
+        </div>
+
+        <h1
+            class="relative z-10 text-5xl md:text-6xl font-black text-yellow-500 tracking-[0.6em] mb-8 drop-shadow-[0_0_15px_rgba(214,158,46,0.3)]">
+            珍藏 · 五十
+        </h1>
+
+        <p
+            class="relative z-10 text-stone-300 tracking-[0.4em] max-w-2xl mx-auto px-6 text-sm md:text-base leading-loose font-light">
+            每一件小物，都是一段時光的濃縮。<br>
+            我們將法脈的溫度化作實體，期待與您共同守護這份傳承。
+        </p>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 pb-32">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+
+            <div class="glass-card group p-8 rounded-sm">
+                <div class="aspect-square bg-stone-900/50 mb-8 overflow-hidden flex items-center justify-center">
+                    <img src="./merch-1.png" alt="小物圖片"
+                        class="max-w-[80%] group-hover:scale-110 transition-transform duration-700">
+                </div>
+                <h2 class="text-2xl text-yellow-600/90 mb-4 tracking-widest">傳承印章</h2>
+                <p class="text-stone-400 text-sm leading-relaxed mb-6 font-light">
+                    以開山大典所用之印記為靈感，選用上等老料刻製。每一枚印章皆有其獨一無二的紋理，象徵法脈傳承的印證。
+                </p>
+                <div class="text-yellow-800 text-xs tracking-widest border-t border-yellow-900/20 pt-4">限定珍藏品</div>
+            </div>
+
+            <div class="glass-card group p-8 rounded-sm">
+                <div class="aspect-square bg-stone-900/50 mb-8 overflow-hidden flex items-center justify-center">
+                    <img src="./merch-2.png" alt="小物圖片"
+                        class="max-w-[80%] group-hover:scale-110 transition-transform duration-700">
+                </div>
+                <h2 class="text-2xl text-yellow-600/90 mb-4 tracking-widest">五十載守護絭</h2>
+                <p class="text-stone-400 text-sm leading-relaxed mb-6 font-light">
+                    選用天然絲縷，結合傳統織造工藝。內裡藏有特製祈福文字，願在日常生活的小細節中，帶給您安定的力量。
+                </p>
+                <div class="text-yellow-800 text-xs tracking-widest border-t border-yellow-900/20 pt-4">法會限定</div>
+            </div>
+
+            <div class="glass-card group p-8 rounded-sm">
+                <div class="aspect-square bg-stone-900/50 mb-8 overflow-hidden flex items-center justify-center">
+                    <img src="./merch-3.png" alt="小物圖片"
+                        class="max-w-[80%] group-hover:scale-110 transition-transform duration-700">
+                </div>
+                <h2 class="text-2xl text-yellow-600/90 mb-4 tracking-widest">萬國九州琉璃座</h2>
+                <p class="text-stone-400 text-sm leading-relaxed mb-6 font-light">
+                    以「法船遠航」為概念，運用古法琉璃脫蠟鑄造。在光影下呈現深邃的層次感，象徵法脈遍灑五大洋的宏願。
+                </p>
+                <div class="text-yellow-800 text-xs tracking-widest border-t border-yellow-900/20 pt-4">藝術珍藏</div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="py-12 border-t border-yellow-900/10 text-center">
+        <p class="text-stone-600 text-xs tracking-widest">© 2026 天法五十週年委員會 · 寶光永耀</p>
+    </footer>
+
+</body>
+
+</html>
